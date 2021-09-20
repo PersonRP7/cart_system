@@ -59,6 +59,28 @@ class Receipt(models.Model):
         for item in self.items.all():
             self.total_price += item.cijena_kartica
         self.save()
+		
+    def calculate_per_slug(self):
+		#subtotal
+        new_list = []
+        new_dictionary = {}
+        for value in self.items.all():
+            if new_list and new_list[-1][0] == value:
+                new_list[-1].append(value)
+            else:
+                new_list.append([value])
+        for i in new_list:
+            if len(i) > 1:
+                for j in i:
+                    # new_dictionary[j.title] = j.cijena_kartica * len(i)
+                    # new_dictionary[j.title] = f"{j.cijena_kartica * len(i)}. Amount: {len(i)}."
+                    new_dictionary[j.title] = [f"{j.cijena_kartica * len(i)}", len(i)]
+            else:
+                # print(i[0].title)
+                # use a list to hold multiple values
+                # new_dictionary[i[0].title] = f"{i[0].cijena_kartica}"
+                new_dictionary[i[0].title] = [f"{i[0].cijena_kartica}", len(i)]
+        print(new_dictionary)
 
     def create_description(self):
         new_str = ""
